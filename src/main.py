@@ -7,6 +7,7 @@ import utime
 import micropython
 import PID_controller
 from motor_driver import MotorDriver as Motor
+from servo_driver import ServoDriver as Servo
 import encoder_reader
 import platform
 import cotask
@@ -46,7 +47,23 @@ MOTOR1_PRINTING_TASK_PERIOD = 10
 HB_TASK_PRIORITY = 99
 HB_TASK_PERIOD = 1000
 
+# servo task setup
+SERVO1_POS_UPDATE_PRIO = 10
+SERVO1_POS_UPDATE_PERIOD = 30   # arbitrary, unsure of correct value
 
+# constants to set servo freq to 50hz w/ tick int of 1us
+SERVO_ARR = 19999
+SERVO_PS = 79
+
+# servo angle specific constants
+SERVO1_MIN_PULSE = 600      # uSec
+SERVO1_MAX_PULSE = 2600     # uSec
+SERVO1_ANGLE_RANGE = 180    # deg
+
+# servo pin and timer declarations
+SERVO1_PIN = pyb.Pin.board.PA0
+SERVO1_TIMER_NUM = 2
+SERVO1_TIMER_CHAN = 1
 
 ## Constant defining the timer number of the pins used for encoder 1
 ENCODER1_TIMER_NUMBER = 4 
@@ -95,6 +112,21 @@ def motor1_setup() -> None:
 
 
 if __name__ == "__main__":
+
+    '''SERVO 1 SETUP'''
+    ## Servo 1 Object
+    servo1 = Servo(SERVO1_PIN,
+                   SERVO1_TIMER_NUM,
+                   SERVO1_TIMER_CHAN,
+                   SERVO1_MIN_PULSE,
+                   SERVO1_MAX_PULSE,
+                   SERVO1_ANGLE_RANGE,
+                   SERVO_ARR,
+                   SERVO_PS)
+
+    ## Initialize servo 1 to nominal position (halfway thru range)
+    servo1.set_angle(SERVO1_ANGLE_RANGE/2)
+
 
     '''MOTOR 1 SETUP'''
     ## Motor 1 Object
@@ -155,6 +187,15 @@ if __name__ == "__main__":
                             period=MOTOR1_CONTROLLER_TASK_PERIOD,
                             profile=True, trace=True, shares=(motor1_position, motor1_controller_value, motor1_task_state))
 
+
+    '''SERVO 1 TASKS SETUP'''
+    servo1_position = task_share.Share('f', thread_protect=False, name="Servo 1 Share") #init with float, only positive angle values
+
+    servo1_position_task = cotask.Task(servo1.set_angle, name="servo1_position_task", priority=SERVO1_POS_UPDATE_PRIO, 
+                            period=SERVO1_POS_UPDATE_PERIOD,
+                            profile=True, trace=True, shares=(servo1_position, motor1_task_state))
+
+    '''OTHER TASKS'''
     heartbeat_task = cotask.Task(heartbeat, name="heartbeat_task", priority=HB_TASK_PRIORITY, 
                             period=HB_TASK_PERIOD,
                             profile=True, trace=True, shares=(motor1_task_state))
@@ -167,6 +208,7 @@ if __name__ == "__main__":
     cotask.task_list.append(motor1_controller_task)
     cotask.task_list.append(heartbeat_task)
     cotask.task_list.append(motor1_print_task)
+    cotask.task_list.append(servo1_position_task)
 
 
     # Run the memory garbage collector to ensure memory is as defragmented as
@@ -193,6 +235,12 @@ if __name__ == "__main__":
                 motor1.set_duty_cycle(0)
                 #print("Done")
 
+            # THIS IS FAKE AND I DONT KNOW HOW YOU WANT THIS IMPLEMENTED YET!! !! ! ! DO NOT LEAVE LIKE THIS! ! ! ! 
+            '''
+            for x in range(180):
+                servo1_position.put(float(x))
+            '''
+                
             if pyb.USB_VCP().any():
 
                 ## Raw value read by the serial bus
@@ -228,7 +276,7 @@ if __name__ == "__main__":
         pass
 
     motor1.set_duty_cycle(0)
-
+    servo1.reset_pulse_width()
 
     # Print a table of task data and a table of shared information data
     print('\n' + str (cotask.task_list))
