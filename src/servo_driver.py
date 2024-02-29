@@ -23,7 +23,7 @@ class ServoDriver:
             Creates a servo driver by initializing GPIO pins.
             @param pwm_pin Pyboard pin controlling channel 1 of the H-bridge
             @param pwm_timer_num Timer number associated with the Pyboard pin defined in in1pin
-            @param pwm_timer_channel_number Timer channel associated with the Pyboard pin defined in in1pin
+            @param pwm_channel_num Timer channel associated with the Pyboard pin defined in in1pin
             @param pwm_min_pulse Minimum pulse width given in ms, used to calculate angle range
             @param pwm_max_pulse Maximum pulse width given in ms, used to calculate angle range
             @param full_angle_range Difference in physical angle for given min and max pulse
@@ -46,7 +46,6 @@ class ServoDriver:
         # determine the applicable angle resolution that can be used
         self.__angle_res = (pwm_max_pulse - pwm_min_pulse) / full_angle_range   # resolution in counts / deg
 
-        #Sweep angle
         self.sweep_angle = 0
  
 

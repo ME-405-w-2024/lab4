@@ -56,8 +56,11 @@ SERVO_ARR = 19999
 SERVO_PS = 79
 
 # servo angle specific constants
+## In mircoseconds
 SERVO1_MIN_PULSE = 600      # uSec
+## In mircoseconds
 SERVO1_MAX_PULSE = 2600     # uSec
+## In mircoseconds
 SERVO1_ANGLE_RANGE = 180    # deg
 
 # servo pin and timer declarations
@@ -73,6 +76,9 @@ TIMEOUT_MS = 2000
 
 
 def heartbeat(shares):
+    """!
+    Optional heartbeat task to verify tasks are working
+    """
 
     task_state_share = shares
 
@@ -90,6 +96,9 @@ def heartbeat(shares):
 
 
 def motor_printing(shares):
+    """!
+    Function to enable printing of motor data to the serial bus
+    """
 
     position_share, controller_value_share, task_state_share = shares
 
@@ -162,36 +171,43 @@ if __name__ == "__main__":
 
     '''MOTOR 1 TASKS SETUP'''
     # Create a share and a queue to test function and diagnostic printouts
+
+    ## Motor 1 position share
     motor1_position = task_share.Share('l', thread_protect=False, name="Motor 1 Share") #initialized with signed long
+    ## Motor 1 controller share
     motor1_controller_value = task_share.Share('f', thread_protect=False, name="Motor 1 Control Val") #initialized with float
+    ## Motor 1 task state share
     motor1_task_state = task_share.Share('l', thread_protect=False, name="Motor 1 Task State") #initialized with signed long
 
-
+    ## Motor 1 speed task
     motor1_speed_task = cotask.Task(motor1.set_duty_cycle_task, name="motor1_speed_task", priority=MOTOR1_SPEED_TASK_PRIORITY, 
                             period=MOTOR1_SPEED_TASK_PERIOD,
                             profile=True, trace=True, shares=(motor1_controller_value, motor1_task_state))
     
-
+    ## Motor 1 position task
     motor1_position_task = cotask.Task(encoder1.read_task, name="motor1_position_task", priority=MOTOR1_POSITION_TASK_PRIORITY, 
                             period=MOTOR1_POSITION_TASK_PERIOD,
                             profile=True, trace=True, shares=(motor1_position, motor1_task_state))
     
-
+    ## Motor 1 PID controller update task
     motor1_controller_task = cotask.Task(controller1.run_task, name="motor1_controller_task", priority=MOTOR1_CONTROLLER_TASK_PRIORITY, 
                             period=MOTOR1_CONTROLLER_TASK_PERIOD,
                             profile=True, trace=True, shares=(motor1_position, motor1_controller_value, motor1_task_state))
     
+    ## Motor 1 print update task
     motor1_print_task = cotask.Task(motor_printing, name="motor1_print_task", priority=MOTOR1_PRINTING_TASK_PRIORITY, 
                             period=MOTOR1_PRINTING_TASK_PERIOD,
                             profile=True, trace=True, shares=(motor1_position, motor1_controller_value, motor1_task_state))
 
 
     '''SERVO 1 TASKS SETUP'''
+    ## Servo 1 test sweep task
     servo1_sweep_task = cotask.Task(servo1.test_sweep_run, name="servo1_position_task", priority=SERVO1_POS_UPDATE_PRIO, 
                             period=SERVO1_POS_UPDATE_PERIOD,
                             profile=True, trace=True, shares=(motor1_task_state))
 
     '''OTHER TASKS'''
+    ## Controller heartbeat task
     heartbeat_task = cotask.Task(heartbeat, name="heartbeat_task", priority=HB_TASK_PRIORITY, 
                             period=HB_TASK_PERIOD,
                             profile=True, trace=True, shares=(motor1_task_state))
