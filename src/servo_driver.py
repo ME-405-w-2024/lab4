@@ -10,7 +10,7 @@ https://deepbluembedded.com/stm32-servo-motor-control-with-pwm-servo-library-exa
 import pyb
 
 class ServoDriver:
-    """
+    """!
     This class implements a servo controlled with PWM pulse width
     """
 
@@ -52,6 +52,12 @@ class ServoDriver:
 
     def set_angle(self,
                   angle: float):
+        """!
+            Sets the angle of the servo by converting a given angle in degrees to a valid count in pulse width.
+            @param angle Takes a float angle value between 0 and the maximum given during instantiation. 
+        """
+
+
         # add in functionality to prevent excess angle writes
         assert angle <= self.__full_angle_range, "Angle cannot be larger than given maximum"
         assert angle >= 0, "Angle cannot be non-positive"
@@ -66,28 +72,42 @@ class ServoDriver:
 
 
     def get_angle(self):
+        """!
+            Returns the current angle of the servo.
+        """
         return self.__angle
     
 
     def reset_pulse_width(self):
+        """!
+            Resets the pulse width to zero to prevent running of the servo after program shutdown.
+        """
         self.__pwm_timer_chan.pulse_width(0)
 
 
 
     def test_sweep_reset(self):
+        """!
+            Resets the current sweep angle.
+        """
         self.sweep_angle = 0
 
 
     def test_sweep_run(self, shares):
+        """!
+            Ramps through the full range of valid integer angles every time this function is called. Intended to be used as a task.
+            @param shares Includes the current task state to allow disabling of the servo
+        """
         task_state_share = shares
 
         while 1:
             state = task_state_share.get()
 
             if state == 0:
+                self.reset_pulse_width()
                 pass
             else:
-                if self.sweep_angle< 180:
+                if self.sweep_angle < self.__full_angle_range:
                     self.sweep_angle += 1
                     self.set_angle(self.sweep_angle)
                     print (self.sweep_angle)
