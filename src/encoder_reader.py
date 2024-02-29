@@ -3,8 +3,11 @@
 
 """
 
-
+import platform
 import pyb
+
+if "MicroPython" not in platform.platform():
+    from me405_support import cotask, cqueue, task_share
 
   
 __AUTO_RELOAD_VALUE = 10000
@@ -64,6 +67,44 @@ class Encoder:
         self.__position += count_delta
 
         return self.__position
+    
+
+    def read_task(self, shares):
+
+        """! 
+            Read the current position
+            @return Position since last zero
+        """        
+
+        position_share, task_state_share = shares
+
+        while True:
+
+            state = task_state_share.get()
+
+            if state == 0:
+                pass
+
+            else:
+                current_count = self.__enc_timer.counter()
+
+                count_delta = self.__last_count - current_count
+
+                if(abs(count_delta) > __AUTO_RELOAD_VALUE/2):
+
+                    if(count_delta < 0):
+                        count_delta += __AUTO_RELOAD_VALUE-1
+
+                    else:
+                        count_delta -= __AUTO_RELOAD_VALUE-1
+
+                self.__last_count = current_count
+
+                self.__position += count_delta
+            
+                position_share.put(self.__position)
+
+            yield 0
     
 
     def zero(self):

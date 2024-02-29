@@ -3,6 +3,11 @@
 
 """
 
+import platform
+
+if "MicroPython" not in platform.platform():
+    from me405_support import cotask, cqueue, task_share
+
 class PIDController:
     """
     Class representing a PID controller with feed-forward compensation
@@ -91,3 +96,42 @@ class PIDController:
         control_value = kp_component + ki_component
         
         return control_value
+    
+
+    def run_task(self, shares):
+
+        """
+            Function to run an iteration of the controller
+
+            @param current_value Current value of the system being controlled.
+                Should be the same units as the target value.
+        """
+
+        current_value_share, control_value_share, task_state_share = shares
+
+        while True:
+
+            state = task_state_share.get()
+
+            if state == 0:
+                pass
+
+            else:
+                current_value = current_value_share.get()
+
+                error = self.__target_value - current_value
+
+                #self.__accumulated_err += error
+                
+
+                #proportional control
+                kp_component = error  * self.__Kp
+
+                #ki_component = self.__accumulated_err * self.__Ki
+                
+                
+                control_value = kp_component #+ ki_component
+                
+                control_value_share.put(control_value)
+        
+            yield 0 

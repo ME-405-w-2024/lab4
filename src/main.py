@@ -9,21 +9,44 @@ import PID_controller
 from motor_driver import MotorDriver as Motor
 import encoder_reader
 import platform
+import cotask
+import task_share
+import gc
 
 if "MicroPython" not in platform.platform():
-    from me405_support import cotask, cqueue
+    from me405_support import cotask, cqueue, task_share
 
 #Allocate memory for debug dump
 micropython.alloc_emergency_exception_buf(100)
 
-## Constant that sets the main task execution period
-TASK_DELAY_MS = 10
 
 ## Constant defining the pin to be used for channel A of the encoder
 ENCODER1_PIN_A = pyb.Pin.board.PB6
-
 ## Constant defining the pin to be used for channel B of the encoder
 ENCODER1_PIN_B = pyb.Pin.board.PB7
+## Enable pin for the motor driver
+MOTOR1_EN_PIN = pyb.Pin.board.PC1
+## Motor 1 channel B control pin
+MOTOR1_INB_PIN = pyb.Pin.board.PA1
+## Motor 1 channel A control pin
+MOTOR1_INA_PIN = pyb.Pin.board.PA0
+
+MOTOR1_SPEED_TASK_PRIORITY = 2
+MOTOR1_SPEED_TASK_PERIOD = 10
+
+MOTOR1_POSITION_TASK_PRIORITY = 3
+MOTOR1_POSITION_TASK_PERIOD = 10
+
+MOTOR1_CONTROLLER_TASK_PRIORITY = 1
+MOTOR1_CONTROLLER_TASK_PERIOD = 10
+
+MOTOR1_PRINTING_TASK_PRIORITY = 4
+MOTOR1_PRINTING_TASK_PERIOD = 10
+
+HB_TASK_PRIORITY = 99
+HB_TASK_PERIOD = 1000
+
+
 
 ## Constant defining the timer number of the pins used for encoder 1
 ENCODER1_TIMER_NUMBER = 4 
@@ -32,32 +55,65 @@ ENCODER1_TIMER_NUMBER = 4
 TIMEOUT_MS = 2000
 
 
+def heartbeat(shares):
+
+    task_state_share = shares
+
+    while True:
+
+        state = task_state_share.get()
+
+        if state == 0:
+            pass
+
+        else:
+            print("beat")
+
+        yield 0
+
+
+def motor_printing(shares):
+
+    position_share, controller_value_share, task_state_share = shares
+
+    while True:
+
+        state = task_state_share.get()
+
+        if state == 0:
+            start_time = utime.ticks_ms()
+            pass
+
+        else:
+            print(str(utime.ticks_ms()-start_time) + "," + str(position_share.get()))
+
+        yield 0
+
+
+def motor1_setup() -> None:
+
+
+
 if __name__ == "__main__":
+
+    '''MOTOR 1 SETUP'''
+    ## Motor 1 Object
+    motor1 = Motor(MOTOR1_EN_PIN, 
+                  MOTOR1_INA_PIN, 2, 1,
+                  MOTOR1_INB_PIN, 2, 2,
+                  30000)
     
+    #Initialize motor to safe state
+    motor1.set_enable(1)
+    motor1.set_duty_cycle(0)
+
+
+    '''MOTOR 1 ENCODER SETUP'''
     ## Motor 1 encoder object
     encoder1 = encoder_reader.Encoder(ENCODER1_PIN_A, ENCODER1_PIN_B, ENCODER1_TIMER_NUMBER, pyb.Pin.AF2_TIM4)
 
 
-    ## Enable pin for the motor driver
-    en_pin = pyb.Pin.board.PC1
-    ## Motor 1 channel B control pin
-    in1b_pin = pyb.Pin.board.PA1
-    ## Motor 1 channel A control pin
-    in1a_pin = pyb.Pin.board.PA0
-
-
-    ## @var motor
-    # Motor 1 driver
-
-    motor = Motor(en_pin, 
-                  in1a_pin, 2, 1,
-                  in1b_pin, 2, 2,
-                  30000)
-    
-    motor.set_enable(1)
-    motor.set_duty_cycle(0)
-
-
+    '''MOTOR 1 PID CONTROL SETUP'''
     ## Current position of motor 1 in encoder ticks
     position1 = 0
 
@@ -65,7 +121,8 @@ if __name__ == "__main__":
     step_target = 16384
 
     ## PID controller object for motor 1
-    p_controller1 = PID_controller.PIDController(Kp=0.005, init_target=step_target, Ki = 0.0001)
+    controller1 = PID_controller.PIDController(Kp=0.03, init_target=step_target, Ki = 0.0001)
+
 
 
     ## Flag defining the end of the step response routine
@@ -73,9 +130,68 @@ if __name__ == "__main__":
 
 
 
+    '''MOTOR 1 TASKS SETUP'''
+    # Create a share and a queue to test function and diagnostic printouts
+    motor1_position = task_share.Share('l', thread_protect=False, name="Motor 1 Share") #initialized with signed long
+    motor1_controller_value = task_share.Share('f', thread_protect=False, name="Motor 1 Control Val") #initialized with float
+    motor1_task_state = task_share.Share('l', thread_protect=False, name="Motor 1 Task State") #initialized with signed long
+
+
+    motor1_speed_task = cotask.Task(motor1.set_duty_cycle_task, name="motor1_speed_task", priority=MOTOR1_SPEED_TASK_PRIORITY, 
+                            period=MOTOR1_SPEED_TASK_PERIOD,
+                            profile=True, trace=True, shares=(motor1_controller_value, motor1_task_state))
+    
+
+    motor1_position_task = cotask.Task(encoder1.read_task, name="motor1_position_task", priority=MOTOR1_POSITION_TASK_PRIORITY, 
+                            period=MOTOR1_POSITION_TASK_PERIOD,
+                            profile=True, trace=True, shares=(motor1_position, motor1_task_state))
+    
+
+    motor1_controller_task = cotask.Task(controller1.run_task, name="motor1_controller_task", priority=MOTOR1_CONTROLLER_TASK_PRIORITY, 
+                            period=MOTOR1_CONTROLLER_TASK_PERIOD,
+                            profile=True, trace=True, shares=(motor1_position, motor1_controller_value, motor1_task_state))
+    
+    motor1_print_task = cotask.Task(motor_printing, name="motor1_print_task", priority=MOTOR1_CONTROLLER_TASK_PRIORITY, 
+                            period=MOTOR1_CONTROLLER_TASK_PERIOD,
+                            profile=True, trace=True, shares=(motor1_position, motor1_controller_value, motor1_task_state))
+
+    heartbeat_task = cotask.Task(heartbeat, name="heartbeat_task", priority=HB_TASK_PRIORITY, 
+                            period=HB_TASK_PERIOD,
+                            profile=True, trace=True, shares=(motor1_task_state))
+    
+
+    motor1_task_state.put(0)
+    
+    cotask.task_list.append(motor1_speed_task)
+    cotask.task_list.append(motor1_position_task)
+    cotask.task_list.append(motor1_controller_task)
+    cotask.task_list.append(heartbeat_task)
+    cotask.task_list.append(motor1_print_task)
+
+
+    # Run the memory garbage collector to ensure memory is as defragmented as
+    # possible before the real-time scheduler is started
+    gc.collect()
+
+
+
+    start_time = 0
+    
+
+    '''MAIN LOOP'''
     try:
 
         while 1:
+
+            cotask.task_list.pri_sched()
+
+            # for idx,value in enumerate(time_values):
+            #     print(str(value) + "," + str(position_values[idx]))
+            
+            if (utime.ticks_ms()-start_time) > TIMEOUT_MS:
+                motor1_task_state.put(0)
+                motor1.set_duty_cycle(0)
+                #print("Done")
 
             if pyb.USB_VCP().any():
 
@@ -83,9 +199,9 @@ if __name__ == "__main__":
                 serial_value = pyb.USB_VCP().read()
 
                 ## Requested Kp value, converted from serial data
-                recieved_Kp = float(serial_value.decode().strip('\n'))
+                received_Kp = float(serial_value.decode().strip('\n'))
 
-                p_controller1.set_Kp(recieved_Kp)
+                controller1.set_Kp(received_Kp)
 
                 ## Time at which the step response test was started in ms
                 start_time = utime.ticks_ms()
@@ -105,40 +221,19 @@ if __name__ == "__main__":
                 ## Time of previous iteration and used to execute the PID at a known period
                 last_time = start_time
 
-                while not done:
-
-                    if (utime.ticks_ms() - last_time) >= TASK_DELAY_MS :
-
-                        current_time_ms_appx += (utime.ticks_ms() - last_time)
-
-                        last_time = utime.ticks_ms()
-
-                        position1 = encoder1.read()
-
-                        ## Current motor controller request value from the PID controller
-                        control1_value = p_controller1.run(position1)
-
-                        motor.set_duty_cycle(int(control1_value))
-                        
-                        position_values.append(position1)
-
-                        time_values.append(current_time_ms_appx)
-
-
-                    if (utime.ticks_ms()-start_time) > TIMEOUT_MS:
-                        done = True
-                        print("Done")
-
-
-                for idx,value in enumerate(time_values):
-                    print(str(value) + "," + str(position_values[idx]))
-
-                
-                
-    
-            motor.set_duty_cycle(0)
-            utime.sleep_ms(TASK_DELAY_MS)
+                motor1_task_state.put(1)
 
         
     except KeyboardInterrupt:
-        motor.set_duty_cycle(0)
+        pass
+
+    motor1.set_duty_cycle(0)
+
+
+    # Print a table of task data and a table of shared information data
+    print('\n' + str (cotask.task_list))
+    print(task_share.show_all())
+    print(motor1_speed_task.get_trace())
+    print(motor1_position_task.get_trace())
+    print(motor1_controller_task.get_trace())
+    print('')

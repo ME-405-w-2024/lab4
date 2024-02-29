@@ -9,12 +9,15 @@ distributed as part of the ME405 curriculum "lab0example.py".
 """
 
 # Imports
+import threading
+import time
 import tkinter
 from random import random
 import serial
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg)
 from matplotlib.backends._backend_tk import (NavigationToolbar2Tk)
+
 
 # Constants
 # CHANGE THIS DEVICE DEPENDING ON SYSTEM TYPE
@@ -38,7 +41,7 @@ def plot_step_data(plot_axes, plot_canvas, xlabel, ylabel, textbox: tkinter.Text
     times = []
     voltages = []   
 
-    ser = serial.Serial(__DEV_NAME, 115200, timeout=2.1) 
+    ser = serial.Serial(__DEV_NAME, 115200, timeout=0.1) 
 
     serial_data = textbox.get(1.0, "end-1c")
 
@@ -57,6 +60,7 @@ def plot_step_data(plot_axes, plot_canvas, xlabel, ylabel, textbox: tkinter.Text
 
                 times.append(float(split_line[0]))
                 voltages.append(float(split_line[1]))
+
 
             if not line:
                 print("Failed to get data")
@@ -127,6 +131,7 @@ def tk_matplot(plot_function, xlabel, ylabel, title):
 
     # this function runs until the user quits
     tkinter.mainloop()
+    
 
 
 if __name__ == "__main__":

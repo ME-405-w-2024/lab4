@@ -1,0 +1,109 @@
+<mxfile host="Electron" modified="2024-02-22T23:58:00.491Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.18 Chrome/120.0.6099.199 Electron/28.1.2 Safari/537.36" etag="I3cgM10H3r3KKCIFy-v7" version="22.1.18" type="device">
+  <diagram name="Page-1" id="0pJQ-d94XDMe3EG4Nf7w">
+    <mxGraphModel dx="1224" dy="802" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-1" value="" style="endArrow=classic;dashed=1;html=1;rounded=0;endFill=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="230" y="364.5" as="sourcePoint" />
+            <mxPoint x="350" y="364.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-3" value="&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Similar to standard variables; they have one value at any moment&lt;/span&gt;&lt;/li&gt;&lt;li&gt;have protection features (isr/thread safe)&lt;/li&gt;&lt;/ul&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="340" y="330" width="430" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-4" value="&lt;span style=&quot;color: rgb(240, 240, 240); font-family: Helvetica; font-size: 24px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(27, 29, 30); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Shares:&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;align=center;fontStyle=1;verticalAlign=middle;fontSize=24;" vertex="1" parent="1">
+          <mxGeometry x="230" y="300" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-5" value="" style="endArrow=classic;html=1;rounded=0;endFill=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="230" y="484.5" as="sourcePoint" />
+            <mxPoint x="350" y="484.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-6" value="&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Stream of sequential data without loss&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Built from circular FIFO buffers&lt;/span&gt;&lt;br&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Can be used as a flag by checking for having any value&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="340" y="450" width="430" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-7" value="&lt;span style=&quot;color: rgb(240, 240, 240); font-family: Helvetica; font-size: 24px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(27, 29, 30); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Queues&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;align=center;fontStyle=1;verticalAlign=middle;fontSize=24;" vertex="1" parent="1">
+          <mxGeometry x="230" y="420" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-8" value="&lt;div&gt;See canvas for link to task_share.py and cotask.py library&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="240" y="600" width="430" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-10" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="340" y="100" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-2" value="FREQ: ###Hz &lt;br&gt;PRI: PRIORITY#" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="yDfG3Bdtb9bK3TSpRfik-10">
+          <mxGeometry y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-9" value="TASK NAME" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="yDfG3Bdtb9bK3TSpRfik-10">
+          <mxGeometry width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-11" value="&lt;span style=&quot;color: rgb(240, 240, 240); font-family: Helvetica; font-size: 24px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(27, 29, 30); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;Example&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;align=center;fontStyle=1;verticalAlign=middle;fontSize=24;" vertex="1" parent="1">
+          <mxGeometry x="160" y="830" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-13" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="210" y="970" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-14" value="FREQ: 100Hz &lt;br&gt;PRI: 1" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="yDfG3Bdtb9bK3TSpRfik-13">
+          <mxGeometry y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-15" value="LED TASK" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="yDfG3Bdtb9bK3TSpRfik-13">
+          <mxGeometry width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-17" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="460" y="970" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-18" value="FREQ: NA (ISR)&lt;br&gt;PRI: ∞" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="yDfG3Bdtb9bK3TSpRfik-17">
+          <mxGeometry y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-19" value="LED TASK" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="yDfG3Bdtb9bK3TSpRfik-17">
+          <mxGeometry width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-20" value="HIGHER priority number is HIGHER priority" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="460" y="900" width="310" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-21" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="yDfG3Bdtb9bK3TSpRfik-20">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="1070" as="sourcePoint" />
+            <mxPoint x="600" y="1030" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="700" y="1010" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-23" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="210" y="1190" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-24" value="FREQ: 1000Hz &lt;br&gt;PRI: 0" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="yDfG3Bdtb9bK3TSpRfik-23">
+          <mxGeometry y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-25" value="USER TASK" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="yDfG3Bdtb9bK3TSpRfik-23">
+          <mxGeometry width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-26" value="" style="endArrow=classic;dashed=1;html=1;rounded=0;endFill=1;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="yDfG3Bdtb9bK3TSpRfik-18" target="yDfG3Bdtb9bK3TSpRfik-14">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="930" as="sourcePoint" />
+            <mxPoint x="440" y="930" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-28" value="button_flag&lt;br&gt;byte" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="yDfG3Bdtb9bK3TSpRfik-26">
+          <mxGeometry x="-0.1231" y="3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-29" value="LED_pattern[3000]&lt;br&gt;float" style="endArrow=classic;html=1;rounded=0;endFill=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="yDfG3Bdtb9bK3TSpRfik-25" target="yDfG3Bdtb9bK3TSpRfik-14">
+          <mxGeometry y="-60" width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="440" y="1150" as="sourcePoint" />
+            <mxPoint x="560" y="1150" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yDfG3Bdtb9bK3TSpRfik-30" value="&lt;div&gt;ALL LAB ASSIGNMENTS FROM 0x03 ONWARD WILL NEED TASK DIAGRAM&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#FF6666;" vertex="1" parent="1">
+          <mxGeometry x="310" y="790" width="430" height="70" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

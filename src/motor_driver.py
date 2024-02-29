@@ -5,7 +5,12 @@ https://www.st.com/en/ecosystems/x-nucleo-ihm04a1.html
 Supports bi-directional operation and speed control through PWM.
 """
 
+
+import platform
 import pyb
+
+if "MicroPython" not in platform.platform():
+    from me405_support import cotask, cqueue, task_share
 
 
 class MotorDriver:
@@ -79,5 +84,38 @@ class MotorDriver:
         else:
             self.__pin1_timer_channel.pulse_width_percent(0)
             self.__pin2_timer_channel.pulse_width_percent(level)
+
+    
+    def set_duty_cycle_task (self, shares):
+        """!
+        This method sets the duty cycle to be sent
+        to the motor to the given level. Positive values
+        cause torque in one direction, negative values
+        in the opposite direction.
+        @param level A signed integer holding the duty
+               cycle of the voltage sent to the motor 
+        """
+        #print (f"Setting duty cycle to {level}")
+
+        level_queue, task_state_share = shares
+
+        while 1:
+
+            state = task_state_share.get()
+
+            if state == 0:
+                pass
+
+            else:
+                level = level_queue.get()
+
+                if(level < 0):
+                    self.__pin1_timer_channel.pulse_width_percent(level * -1)
+                    self.__pin2_timer_channel.pulse_width_percent(0)
+                else:
+                    self.__pin1_timer_channel.pulse_width_percent(0)
+                    self.__pin2_timer_channel.pulse_width_percent(level)
+
+            yield 0
 
     
