@@ -49,7 +49,7 @@ HB_TASK_PERIOD = 1000
 
 # servo task setup
 SERVO1_POS_UPDATE_PRIO = 10
-SERVO1_POS_UPDATE_PERIOD = 50   # arbitrary, unsure of correct value
+SERVO1_POS_UPDATE_PERIOD = 10   # arbitrary, unsure of correct value
 
 # constants to set servo freq to 50hz w/ tick int of 1us
 SERVO_ARR = 19999
@@ -61,8 +61,8 @@ SERVO1_MAX_PULSE = 2600     # uSec
 SERVO1_ANGLE_RANGE = 180    # deg
 
 # servo pin and timer declarations
-SERVO1_PIN = pyb.Pin.board.PA0
-SERVO1_TIMER_NUM = 2
+SERVO1_PIN = pyb.Pin.board.PA8
+SERVO1_TIMER_NUM = 1
 SERVO1_TIMER_CHAN = 1
 
 ## Constant defining the timer number of the pins used for encoder 1
@@ -105,9 +105,6 @@ def motor_printing(shares):
             print(str(utime.ticks_ms()-start_time) + "," + str(position_share.get()))
 
         yield 0
-
-
-def motor1_setup() -> None:
 
 
 

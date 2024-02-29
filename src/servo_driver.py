@@ -45,6 +45,9 @@ class ServoDriver:
         
         # determine the applicable angle resolution that can be used
         self.__angle_res = (pwm_max_pulse - pwm_min_pulse) / full_angle_range   # resolution in counts / deg
+
+        #Sweep angle
+        self.sweep_angle = 0
  
 
     def set_angle(self,
@@ -72,9 +75,7 @@ class ServoDriver:
 
 
     def test_sweep_reset(self):
-        while 1:
-            self.sweep_angle = 0
-            yield
+        self.sweep_angle = 0
 
 
     def test_sweep_run(self, shares):
@@ -86,9 +87,10 @@ class ServoDriver:
             if state == 0:
                 pass
             else:
-                if self.sweep_angle<= 180:
+                if self.sweep_angle< 180:
                     self.sweep_angle += 1
                     self.set_angle(self.sweep_angle)
+                    print (self.sweep_angle)
                 else:
                     self.sweep_angle = 0
 
