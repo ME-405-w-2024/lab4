@@ -43,7 +43,6 @@ class ServoDriver:
         # assign the channel to the given pin
         self.__pwm_timer_chan = self.__pwm_timer.channel(pwm_channel_num, pyb.Timer.PWM, pin=self.__pwm_pin)
         
-
         # determine the applicable angle resolution that can be used
         self.__angle_res = (pwm_max_pulse - pwm_min_pulse) / full_angle_range   # resolution in counts / deg
  
@@ -71,23 +70,26 @@ class ServoDriver:
         self.__pwm_timer_chan.pulse_width(0)
 
 
-    def set_angle_cycle_task (self, shares):
-        """!
-        to update!!!
-        @param 
-        """
 
-        angle_queue, task_state_share = shares
+    def test_sweep_reset(self):
+        while 1:
+            self.sweep_angle = 0
+            yield
+
+
+    def test_sweep_run(self, shares):
+        task_state_share = shares
 
         while 1:
-
             state = task_state_share.get()
 
             if state == 0:
                 pass
-
             else:
-                angle = angle_queue.get()   # get the most recent angle
-                self.set_angle(angle)       # set the servo position to the newest angle
+                if self.sweep_angle<= 180:
+                    self.sweep_angle += 1
+                    self.set_angle(self.sweep_angle)
+                else:
+                    self.sweep_angle = 0
 
             yield

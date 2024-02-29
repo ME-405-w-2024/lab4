@@ -49,7 +49,7 @@ HB_TASK_PERIOD = 1000
 
 # servo task setup
 SERVO1_POS_UPDATE_PRIO = 10
-SERVO1_POS_UPDATE_PERIOD = 30   # arbitrary, unsure of correct value
+SERVO1_POS_UPDATE_PERIOD = 50   # arbitrary, unsure of correct value
 
 # constants to set servo freq to 50hz w/ tick int of 1us
 SERVO_ARR = 19999
@@ -125,7 +125,8 @@ if __name__ == "__main__":
                    SERVO_PS)
 
     ## Initialize servo 1 to nominal position (halfway thru range)
-    servo1.set_angle(SERVO1_ANGLE_RANGE/2)
+    # servo1.set_angle(SERVO1_ANGLE_RANGE/2)
+    servo1.test_sweep_reset()
 
 
     '''MOTOR 1 SETUP'''
@@ -189,11 +190,9 @@ if __name__ == "__main__":
 
 
     '''SERVO 1 TASKS SETUP'''
-    servo1_position = task_share.Share('f', thread_protect=False, name="Servo 1 Share") #init with float, only positive angle values
-
-    servo1_position_task = cotask.Task(servo1.set_angle, name="servo1_position_task", priority=SERVO1_POS_UPDATE_PRIO, 
+    servo1_sweep_task = cotask.Task(servo1.test_sweep_run, name="servo1_position_task", priority=SERVO1_POS_UPDATE_PRIO, 
                             period=SERVO1_POS_UPDATE_PERIOD,
-                            profile=True, trace=True, shares=(servo1_position, motor1_task_state))
+                            profile=True, trace=True, shares=(motor1_task_state))
 
     '''OTHER TASKS'''
     heartbeat_task = cotask.Task(heartbeat, name="heartbeat_task", priority=HB_TASK_PRIORITY, 
@@ -208,7 +207,7 @@ if __name__ == "__main__":
     cotask.task_list.append(motor1_controller_task)
     cotask.task_list.append(heartbeat_task)
     cotask.task_list.append(motor1_print_task)
-    cotask.task_list.append(servo1_position_task)
+    cotask.task_list.append(servo1_sweep_task)
 
 
     # Run the memory garbage collector to ensure memory is as defragmented as
@@ -235,11 +234,6 @@ if __name__ == "__main__":
                 motor1.set_duty_cycle(0)
                 #print("Done")
 
-            # THIS IS FAKE AND I DONT KNOW HOW YOU WANT THIS IMPLEMENTED YET!! !! ! ! DO NOT LEAVE LIKE THIS! ! ! ! 
-            '''
-            for x in range(180):
-                servo1_position.put(float(x))
-            '''
                 
             if pyb.USB_VCP().any():
 
