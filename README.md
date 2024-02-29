@@ -23,3 +23,7 @@ Example response running controller below 100 Hz:
 Example response running controller above 100 Hz:
 
 ![10 ms controller period](https://github.com/ME-405-w-2024/lab4/blob/main/ControllerSpeedResponses/10ms.png)
+
+Task Diagram:
+
+![Task diagram](https://github.com/ME-405-w-2024/lab4/blob/main/taskdiagram.png)
