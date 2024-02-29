@@ -15,7 +15,9 @@ The code present in this repository implements a task-sharing regime to control 
 When a controller task is run too slowly, the system fails to adequately control the actuator. This is seen in the plot below. A recommended minimum speed for adequate motor control is ***100 Hz***. 
 
 Example response running controller below 100 Hz:
+
 ![100ms controller period](https://github.com/ME-405-w-2024/lab4/blob/main/ControllerSpeedResponses/100ms.png)
 
 Example response running controller above 100 Hz:
+
 ![10 ms controller period](https://github.com/ME-405-w-2024/lab4/blob/main/ControllerSpeedResponses/10ms.png)
