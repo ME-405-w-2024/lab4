@@ -32,19 +32,19 @@ MOTOR1_INB_PIN = pyb.Pin.board.PA1
 ## Motor 1 channel A control pin
 MOTOR1_INA_PIN = pyb.Pin.board.PA0
 
-MOTOR1_SPEED_TASK_PRIORITY = 2
+MOTOR1_SPEED_TASK_PRIORITY = 3
 MOTOR1_SPEED_TASK_PERIOD = 10
 
-MOTOR1_POSITION_TASK_PRIORITY = 3
+MOTOR1_POSITION_TASK_PRIORITY = 2
 MOTOR1_POSITION_TASK_PERIOD = 10
 
 MOTOR1_CONTROLLER_TASK_PRIORITY = 1
 MOTOR1_CONTROLLER_TASK_PERIOD = 10
 
-MOTOR1_PRINTING_TASK_PRIORITY = 4
+MOTOR1_PRINTING_TASK_PRIORITY = 3
 MOTOR1_PRINTING_TASK_PERIOD = 10
 
-HB_TASK_PRIORITY = 99
+HB_TASK_PRIORITY = 999
 HB_TASK_PERIOD = 1000
 
 # servo task setup
@@ -181,8 +181,8 @@ if __name__ == "__main__":
                             period=MOTOR1_CONTROLLER_TASK_PERIOD,
                             profile=True, trace=True, shares=(motor1_position, motor1_controller_value, motor1_task_state))
     
-    motor1_print_task = cotask.Task(motor_printing, name="motor1_print_task", priority=MOTOR1_CONTROLLER_TASK_PRIORITY, 
-                            period=MOTOR1_CONTROLLER_TASK_PERIOD,
+    motor1_print_task = cotask.Task(motor_printing, name="motor1_print_task", priority=MOTOR1_PRINTING_TASK_PRIORITY, 
+                            period=MOTOR1_PRINTING_TASK_PERIOD,
                             profile=True, trace=True, shares=(motor1_position, motor1_controller_value, motor1_task_state))
 
 
